@@ -25,6 +25,7 @@ const Home: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [responseData, setResponseData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   /**
    * Handle click event on the file input.
@@ -53,6 +54,7 @@ const Home: React.FC = () => {
       const selectedFile = event.target.files?.[0];
       if (selectedFile) {
         setFile(selectedFile);
+        setResponseData(null);
       }
     } catch (error) {
       console.error(error);
@@ -66,6 +68,7 @@ const Home: React.FC = () => {
   const onConvertFileClick = async () => {
     if (!file) return;
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("fileName", file.name);
@@ -79,6 +82,8 @@ const Home: React.FC = () => {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,7 +138,11 @@ const Home: React.FC = () => {
 
         {file && !responseData && (
           <div className="flex justify-center">
-            <Button label="Convert to JSON" onClick={onConvertFileClick} />
+            <Button
+              label="Convert to JSON"
+              onClick={onConvertFileClick}
+              loading={loading}
+            />
           </div>
         )}
 

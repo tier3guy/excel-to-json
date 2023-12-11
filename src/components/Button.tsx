@@ -15,14 +15,17 @@ import React, { ButtonHTMLAttributes, FC } from "react";
  * <Button label="Click me" onClick={() => console.log("Button clicked")} />
  */
 const Button: FC<
-  { label?: string } & ButtonHTMLAttributes<HTMLButtonElement>
-> = ({ label = "Button", className = "", ...restProps }) => {
+  {
+    label?: string;
+    loading?: boolean;
+  } & ButtonHTMLAttributes<HTMLButtonElement>
+> = ({ label = "Button", className = "", loading = false, ...restProps }) => {
   return (
     <button
       className={`border-red-500 border-2 px-4 py-1 bg-red-300 hover:bg-red-200 ${className}`}
       {...restProps}
     >
-      {label}
+      {loading ? "Loading ..." : label}
     </button>
   );
 };

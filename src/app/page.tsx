@@ -7,18 +7,24 @@ import React, { useRef, SyntheticEvent, useState, ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 
 // Components Imports
 import Button from "@/components/Button";
+import ReactJsonViewer from "@/components/ReactJsonViewer";
+
+// Constants
+import { API_BASE_URL } from "../constants";
 
 /**
  * @name - Home Component
  * @author - Avinash Gupta
- * @description - The main component for the Excel to JSON Converter app.
+ * @description - The main component for the CSV to JSON Converter app.
  */
 const Home: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [responseData, setResponseData] = useState(null);
 
   /**
    * Handle click event on the file input.
@@ -60,27 +66,49 @@ const Home: React.FC = () => {
   const onConvertFileClick = async () => {
     if (!file) return;
     try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fileName", file.name);
+      const response = await fetch(`${API_BASE_URL}/csv-to-json`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      if (result && result.status === 201) {
+        setResponseData(result.data);
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-100 p-4">
+    <div className="min-h-screen w-screen bg-gray-100 p-4 overflow-x-hidden">
+      {/* Github Link */}
+      <a href="https://github.com/tier3guy/excel-to-json" target="__blank">
+        <div className="fixed top-0 left-0 bg-black h-[150px] w-[150px] rotate-45 translate-y-[-50%] translate-x-[-50%]">
+          <FontAwesomeIcon
+            icon={faGithub}
+            className="text-white text-5xl rotate-[-90deg] translate-y-[110%] translate-x-[200%]"
+          />
+        </div>
+      </a>
+
       <input
         type="file"
         ref={inputRef}
+        name="fileInput"
         className="hidden"
-        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-CSV"
         onChange={onFileChangeHandler}
       />
       <div className="md:w-2/3 m-auto">
         <h1 className="text-center py-5 text-3xl font-bold">
-          Excel-to-JSON Converter
+          CSV-to-JSON Converter
         </h1>
         <p className="text-center">
-          Welcome to the Excel to JSON Converter, a powerful internal tool
-          designed to streamline the process of converting Excel files into JSON
+          Welcome to the CSV to JSON Converter, a powerful internal tool
+          designed to streamline the process of converting CSV files into JSON
           format. This tool simplifies data transformation, making it easy for
           users to extract valuable insights from their spreadsheet data.
         </p>
@@ -90,7 +118,11 @@ const Home: React.FC = () => {
           onClick={inputClickHandler}
         >
           {file ? (
-            <p>{file.name}</p>
+            <div className="text-center flex flex-col gap-2">
+              <p>Selected File : {file.name}</p>
+              <p>OR</p>
+              <p>Click again to change the file</p>
+            </div>
           ) : (
             <FontAwesomeIcon
               icon={faCloudArrowUp as IconDefinition} // Adjust the type based on your FontAwesome version
@@ -99,13 +131,21 @@ const Home: React.FC = () => {
           )}
         </div>
 
-        {file && (
+        {file && !responseData && (
           <div className="flex justify-center">
             <Button label="Convert to JSON" onClick={onConvertFileClick} />
           </div>
         )}
+
+        {responseData && (
+          <ReactJsonViewer
+            src={JSON.stringify(responseData, null, 2)}
+            name={file ? (file?.name).split(".")[0] : null}
+          />
+        )}
       </div>
-      <footer className="fixed bottom-0 w-screen">
+
+      <footer className={!responseData ? "fixed w-screen bottom-4" : ""}>
         <p className="text-center">
           Built with &#x1F9E1; by{" "}
           <a href="mailto:avinash.gupta@vils.ai" className="underline">

@@ -19,7 +19,7 @@ const Button: FC<
 > = ({ label = "Button", className = "", ...restProps }) => {
   return (
     <button
-      className={`border-red-500 border-2 px-4 py-1 bg-red-300 ${className}`}
+      className={`border-red-500 border-2 px-4 py-1 bg-red-300 hover:bg-red-200 ${className}`}
       {...restProps}
     >
       {label}

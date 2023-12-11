@@ -7,13 +7,13 @@
  */
 
 /** @type {AppMode} */
-export const MODE = "DEVELOPMENT"; // DEVELOPMENT
+export const MODE = "PRODUCTION"; // DEVELOPMENT
 
 /**
  * API Base URL.
  * @type {string}
  */
 export const API_BASE_URL: string =
-  MODE === "DEVELOPMENT"
-    ? "http://192.168.29.248:8501/api"
-    : "https://excel-to-json-backend-nine.vercel.app/api";
+  MODE === "PRODUCTION"
+    ? "https://excel-to-json-backend.onrender.com/api"
+    : "http://localhost:8501/api";

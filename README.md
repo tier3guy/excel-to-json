@@ -47,7 +47,7 @@ We welcome contributions from the community to enhance and improve the Excel to 
 
 ## Support
 
-For any questions, issues, or assistance, reach out to our dedicated support team at avinash.gupta@vils.ai.
+For any questions, issues, or assistance, reach out to our dedicated support team at avinashgupta.works@gmail.com.
 
 ## License
 

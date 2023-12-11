@@ -44,15 +44,26 @@ const Home: React.FC = () => {
    */
   const onFileChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     try {
-      if (inputRef.current && inputRef.current.files) {
-        setFile(inputRef.current.files[0]);
+      const selectedFile = event.target.files?.[0];
+      if (selectedFile) {
+        setFile(selectedFile);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  console.log(file);
+  /**
+   * Handle click event on the "Convert to JSON" button.
+   * This function initiates the conversion of the selected file to JSON.
+   */
+  const onConvertFileClick = async () => {
+    if (!file) return;
+    try {
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="h-screen w-screen bg-gray-100 p-4">
@@ -90,7 +101,7 @@ const Home: React.FC = () => {
 
         {file && (
           <div className="flex justify-center">
-            <Button label="Convert to JSON" />
+            <Button label="Convert to JSON" onClick={onConvertFileClick} />
           </div>
         )}
       </div>

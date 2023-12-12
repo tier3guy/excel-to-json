@@ -6,11 +6,17 @@ import React, { useRef, SyntheticEvent, useState, ChangeEvent } from "react";
 // External Imports
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCloudArrowUp,
+  faArrowRightLong,
+} from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Components Imports
 import Button from "@/components/Button";
+import Input from "@/components/Input";
 import ReactJsonViewer from "@/components/ReactJsonViewer";
 
 // Constants
@@ -25,6 +31,7 @@ const Home: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [responseData, setResponseData] = useState(null);
+  const [url, setUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   /**
@@ -37,6 +44,7 @@ const Home: React.FC = () => {
     try {
       if (inputRef.current) {
         inputRef.current.click();
+        setUrl("");
       }
     } catch (error) {
       console.error(error);
@@ -87,6 +95,61 @@ const Home: React.FC = () => {
     }
   };
 
+  /**
+   * Handle enter button press event and icon click event on the Input icon button.
+   * This function initiates the downloading of the file of the given url and initiates the conversion of the selected file to JSON.
+   */
+  const onUrlEnter = async () => {
+    if (!url) return;
+    try {
+      setLoading(true);
+      const fileType = url.split("/")[3];
+      let extenstion = "";
+
+      switch (fileType) {
+        case "spreadsheets":
+          extenstion = "xlsx";
+          break;
+        case "file":
+          extenstion = "csv";
+          break;
+        default:
+          break;
+      }
+
+      if (extenstion === "") {
+        const notify = () => toast("Unsupported File Type.");
+        notify();
+        return;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        const notify = () =>
+          toast(`Failed to fetch file. Status: ${response.status}`);
+        notify();
+        throw new Error(`Failed to fetch file. Status: ${response.status}`);
+      }
+      const blobData = await response.blob();
+
+      const fileName = `data.${extenstion}`;
+      const file = new File([blobData], fileName, {
+        type: extenstion,
+        lastModified: Date.now(),
+      });
+      setFile(file);
+    } catch (error) {
+      console.error(error);
+      const notify = () =>
+        toast(
+          "Some error has been occured. Check console to see more details."
+        );
+      notify();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-screen bg-gray-100 p-4 overflow-x-hidden">
       {/* Github Link */}
@@ -108,7 +171,7 @@ const Home: React.FC = () => {
         onChange={onFileChangeHandler}
       />
       <div className="md:w-2/3 m-auto">
-        <h1 className="text-center py-5 text-3xl font-bold">
+        <h1 className="text-center pb-5 text-3xl font-bold">
           Excel-to-JSON Converter
         </h1>
         <p className="text-center">
@@ -132,15 +195,35 @@ const Home: React.FC = () => {
               <p>Click again to change the file</p>
             </div>
           ) : (
-            <FontAwesomeIcon
-              icon={faCloudArrowUp as IconDefinition} // Adjust the type based on your FontAwesome version
-              className="h-[50px] w-[50px]"
-            />
+            <div className="flex flex-col items-center">
+              <FontAwesomeIcon
+                icon={faCloudArrowUp as IconDefinition} // Adjust the type based on your FontAwesome version
+                className="h-[50px] w-[50px]"
+              />
+              <p className="text-center">Click to Upload</p>
+            </div>
           )}
         </div>
 
+        <p className="text-center">OR</p>
+
+        <div className="w-2/3 m-auto">
+          <Input
+            value={url}
+            setValue={setUrl}
+            placeholder="Paste the url of the sheet ... [UNDER DEVELOPMENT]"
+            icon={faArrowRightLong}
+            onIconClick={onUrlEnter}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                onUrlEnter();
+              }
+            }}
+          />
+        </div>
+
         {file && !responseData && (
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-4">
             <Button
               label="Convert to JSON"
               onClick={onConvertFileClick}
@@ -153,11 +236,16 @@ const Home: React.FC = () => {
           <ReactJsonViewer
             src={JSON.stringify(responseData, null, 2)}
             name={file ? (file?.name).split(".")[0] : null}
+            cb={() => {
+              setFile(null);
+              setResponseData(null);
+              setUrl("");
+            }}
           />
         )}
       </div>
 
-      <footer className={!responseData ? "fixed w-screen bottom-4" : ""}>
+      <footer className="mt-10">
         <p className="text-center">
           Built with &#x1F9E1; by{" "}
           <a

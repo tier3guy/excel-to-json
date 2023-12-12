@@ -13,12 +13,14 @@ import Button from "./Button";
  * @component
  * @param {Object} props - The properties of the component.
  * @param {any} props.src - The JSON data to be displayed.
+ * @param {any} props.cb - Additional callback function.
  * @returns {JSX.Element} - The rendered component.
  */
-const ReactJsonViewer: React.FC<{ src: string; name: string | null }> = ({
-  src,
-  name,
-}) => {
+const ReactJsonViewer: React.FC<{
+  src: string;
+  name: string | null;
+  cb?: Function;
+}> = ({ src, name, cb = () => {} }) => {
   const handleCopyClick = () => {
     // Copy the JSON data to the clipboard
     copy(src);
@@ -40,6 +42,20 @@ const ReactJsonViewer: React.FC<{ src: string; name: string | null }> = ({
 
   return (
     <div>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        theme="dark"
+        progressStyle={{ backgroundColor: "orange" }}
+        style={{
+          fontFamily: "Inter !important",
+        }}
+      />
       <div className="flex gap-3 my-3 justify-center">
         <Button label="Copy" className="w-[150px]" onClick={handleCopyClick} />
         <Button
@@ -47,18 +63,11 @@ const ReactJsonViewer: React.FC<{ src: string; name: string | null }> = ({
           className="w-[150px]"
           onClick={handleDownloadClick}
         />
-        <ToastContainer
-          position="bottom-left"
-          autoClose={3000}
-          hideProgressBar={true}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          theme="dark"
-          progressStyle={{ backgroundColor: "orange" }}
-          style={{
-            fontFamily: "Inter !important",
+        <Button
+          label="Clear"
+          className="w-[150px]"
+          onClick={() => {
+            cb();
           }}
         />
       </div>

@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "csv-to-json",
+  title: "excel-to-json",
   description:
     "Welcome to the Excel to JSON Converter, a powerful internal tool designed to streamline the process of converting Excel files into JSON format. This tool simplifies data transformation, making it easy for users to extract valuable insights from their spreadsheet data.",
 };

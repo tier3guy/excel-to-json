@@ -19,7 +19,7 @@ import { API_BASE_URL } from "../constants";
 /**
  * @name - Home Component
  * @author - Avinash Gupta
- * @description - The main component for the CSV to JSON Converter app.
+ * @description - The main component for the Excel to JSON Converter app.
  */
 const Home: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -104,18 +104,21 @@ const Home: React.FC = () => {
         ref={inputRef}
         name="fileInput"
         className="hidden"
-        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.ms-CSV"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.ms-Excel"
         onChange={onFileChangeHandler}
       />
       <div className="md:w-2/3 m-auto">
         <h1 className="text-center py-5 text-3xl font-bold">
-          CSV-to-JSON Converter
+          Excel-to-JSON Converter
         </h1>
         <p className="text-center">
-          Welcome to the CSV to JSON Converter, a powerful internal tool
-          designed to streamline the process of converting CSV files into JSON
+          Welcome to the Excel to JSON Converter, a powerful internal tool
+          designed to streamline the process of converting Excel files into JSON
           format. This tool simplifies data transformation, making it easy for
           users to extract valuable insights from their spreadsheet data.
+        </p>
+        <p className="text-center mt-3">
+          Note : Currently we are supporting only .csv, .xls and .xlsx files.
         </p>
 
         <div

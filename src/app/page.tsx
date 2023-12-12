@@ -93,7 +93,7 @@ const Home: React.FC = () => {
       <a href="https://github.com/tier3guy/excel-to-json" target="__blank">
         <div className="fixed top-0 left-0 bg-black h-[150px] w-[150px] rotate-45 translate-y-[-50%] translate-x-[-50%]">
           <FontAwesomeIcon
-            icon={faGithub}
+            icon={faGithub as IconDefinition}
             className="text-white text-5xl rotate-[-90deg] translate-y-[110%] translate-x-[200%]"
           />
         </div>
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
         ref={inputRef}
         name="fileInput"
         className="hidden"
-        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-CSV"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.ms-CSV"
         onChange={onFileChangeHandler}
       />
       <div className="md:w-2/3 m-auto">
@@ -157,7 +157,11 @@ const Home: React.FC = () => {
       <footer className={!responseData ? "fixed w-screen bottom-4" : ""}>
         <p className="text-center">
           Built with &#x1F9E1; by{" "}
-          <a href="mailto:avinash.gupta@vils.ai" className="underline">
+          <a
+            href="https://www.linkedin.com/in/avinash-gupta-3321041ba/"
+            target="__blank"
+            className="underline"
+          >
             Avinash
           </a>{" "}
           at{" "}

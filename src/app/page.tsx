@@ -89,6 +89,9 @@ const Home: React.FC = () => {
         setResponseData(result.data);
       }
     } catch (error) {
+      const notify = () =>
+        toast("Some error has been occured. Check the console to know more.");
+      notify();
       console.error(error);
     } finally {
       setLoading(false);
@@ -211,7 +214,7 @@ const Home: React.FC = () => {
           <Input
             value={url}
             setValue={setUrl}
-            placeholder="Paste the url of the sheet ... [UNDER DEVELOPMENT]"
+            placeholder="Paste the web URL of the sheet ..."
             icon={faArrowRightLong}
             onIconClick={onUrlEnter}
             onKeyDown={(event) => {
